@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+<article class="post-detail">
+  <div class="post-detail-header">
+    <h1 class="post-detail-title">{{ post.title }}</h1>
+    <div class="post-detail-meta">
+      <span class="meta-item">👤 {{ post.author }}</span>
+      <span class="meta-item">📅 {{ post.created_at|date:"d.m.Y H:i" }}</span>
+      <span class="meta-item">👁️ {{ post.views }} переглядів</span>
+      <span class="meta-item">📂 <a href="{{ post.category.get_absolute_url }}">{{ post.category.name }}</a></span>
+    </div>
+  </div>
+
+  {% if post.image %}
+  <div class="post-detail-image">
+    <img src="{{ post.image.url }}" alt="{{ post.title }}">
+  </div>
+  {% endif %}
+
+  <div class="post-detail-content">
+    {{ post.content|linebreaks }}
+  </div>
+
+  <div class="post-detail-footer">
+    <p class="post-updated">Оновлено: {{ post.updated_at|date:"d.m.Y H:i" }}</p>
+    <a href="{% url 'main:post_list' %}" class="back-btn">← Повернутися до списку</a>
+  </div>
+</article>
+
+{% if related_posts %}
+<section class="related-posts">
+  <h2 class="related-title">Схожі пости</h2>
+  <div class="related-grid">
+    {% for related in related_posts %}
+    <div class="related-card">
+      {% if related.image %}
+      <img src="{{ related.image.url }}" alt="{{ related.title }}">
+      {% endif %}
+      <h3>{{ related.title }}</h3>
+      <p>{{ related.content|truncatewords:15 }}</p>
+      <a href="{{ related.get_absolute_url }}">Читати далі →</a>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+{% endblock %}

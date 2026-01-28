@@ -1,11 +1,31 @@
-{% extends "base.html" %}
-{% block title %} {{ title }} {% endblock title %}
-{% block content %}
-<h1>Posts</h1>
-<ul>
-  {% for post in posts %}
-      <li>{{ post.title }} - {{ post.content }}</li>
-  {% endfor %}
-</ul>
+{% extends 'base.html' %}
 
-{% endblock content %}
+{% block title %} Posts {% endblock %}
+
+{% block content %}
+<h1 class="posts-title">{% if category %}{{ category.name }}{% else %}Всі пости{% endif %}</h1>
+<div class="sort-buttons">
+  <a href="?sort=new" class="sort-btn {% if current_sort == 'new' %}active{% endif %}">Спочатку нові</a>
+  <a href="?sort=old" class="sort-btn {% if current_sort == 'old' %}active{% endif %}">Спочатку старі</a>
+  <a href="?sort=popular" class="sort-btn {% if current_sort == 'popular' %}active{% endif %}">Спочатку популярні</a>
+</div>
+<div class="posts-container">
+  {% for post in posts %}
+  <div class="post">
+    {% if post.image %}
+      <img src="{{ post.image.url }}" alt="{{ post.title }}">
+    {% endif %}
+    <h2 class="post-title">{{ post.title }}</h2>
+    <p class="post-content">{{ post.content|truncatewords:30 }}</p>
+    <div class="post-meta">
+      <p class="post-author">👤 {{ post.author }}</p>
+      <p class="post-created_at">📅 {{ post.created_at|date:"d.m.Y" }}</p>
+      <p class="post-updated_at">👁️ {{ post.views }} переглядів</p>
+    </div>
+    <a href="{{ post.get_absolute_url }}">Читати далі →</a>
+  </div>
+  {% empty %}
+  <p class="no-posts">Пости не знайдено.</p>
+  {% endfor %}
+</div>
+{% endblock %}
