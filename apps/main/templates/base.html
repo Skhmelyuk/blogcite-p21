@@ -1,15 +1,29 @@
+<!DOCTYPE html>
 {% load static %}
-<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{% block title %} {% endblock title %}</title>
-    <link rel="stylesheet" href="{% static "css/style.css" %}">
+    <title>{% block title %}Blog{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
   </head>
   <body>
-    <header></header>
-    <main>{% block content %} {% endblock content %}</main>
-    <footer></footer>
+    <div class="container">
+      <header class="header">
+        <h1>Blog</h1>
+        <nav>
+          <ul>
+            <li><a href="{% url 'main:post_list' %}">Всі пости</a></li>
+            {% for category in categories %}
+               <li><a href="{{ category.get_absolute_url }}">{{ category.name }}</a></li>
+            {% endfor %}
+          </ul>
+        </nav>
+      </header>
+      <main class="main">{% block content %}{% endblock %}</main>
+      <footer class="footer">
+        <p>&copy; 2025 Blog. All rights reserved.</p>
+      </footer>
+    </div>
   </body>
 </html>
