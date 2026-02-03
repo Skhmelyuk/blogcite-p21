@@ -6,8 +6,10 @@ from django.utils.html import format_html
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
   list_display = ("id", "title", "author", "category", "image_tag", "created_at", "likes", "views")
-  list_editable = ("category",)
+  list_editable = ("title", "author") 
   prepopulated_fields = {"slug": ("title",)}
+  list_filter = ("created_at", "updated_at", "category") 
+  search_fields = ("title", "content")
 
   def image_tag(self, obj):
       if obj.image:

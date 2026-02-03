@@ -1,28 +1,51 @@
-<!DOCTYPE html>
 {% load static %}
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}Blog{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
   </head>
-  <body>
-    <div class="container">
-      <header class="header">
-        <h1>Blog</h1>
-        <nav>
-          <ul>
-            <li><a href="{% url 'main:post_list' %}">Всі пости</a></li>
-            {% for category in categories %}
-               <li><a href="{{ category.get_absolute_url }}">{{ category.name }}</a></li>
-            {% endfor %}
-          </ul>
-        </nav>
+  <body class="bg-gray-50 min-h-screen flex flex-col">
+    <div class="flex flex-col min-h-screen">
+      <header class="bg-white shadow-md">
+        <div class="container mx-auto px-4 py-4">
+          <div class="flex items-center justify-between">
+            <h1 class="text-3xl font-bold text-teal-600">Blog</h1>
+            <div class="flex items-center gap-4">
+              {% if user.is_authenticated %}
+                {% if user.is_staff %}
+                  <a 
+                    href="{% url 'admin:index' %}" 
+                    class="text-gray-700 hover:text-teal-600 transition-colors">
+                      Адмін панель
+                  </a>
+                {% endif %}
+                <a href="{% url 'accounts:profile' %}" class="text-gray-700 hover:text-teal-600 transition-colors">Профіль</a>
+                <a href="{% url 'accounts:logout' %}" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors">Вийти</a>
+              {% else %}
+                <a href="{% url 'accounts:login' %}" class="text-gray-700 hover:text-teal-600 transition-colors">Вхід</a>
+                <a href="{% url 'accounts:register' %}" class="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg transition-colors">Реєстрація</a>
+              {% endif %}
+            </div>
+          </div>
+   
+        <nav class="mt-4">
+            <ul class="flex flex-wrap gap-4">
+              <li><a href="{% url 'main:post_list' %}" class="text-gray-700 hover:text-teal-600 font-medium transition-colors">Всі пости</a></li>
+              {% for category in categories %}
+                <li><a href="{{ category.get_absolute_url }}" class="text-gray-700 hover:text-teal-600 font-medium transition-colors">{{ category.name }}</a></li>
+              {% endfor %}
+            </ul>
+          </nav>
       </header>
-      <main class="main">{% block content %}{% endblock %}</main>
-      <footer class="footer">
-        <p>&copy; 2025 Blog. All rights reserved.</p>
+      <main class="flex-1 container mx-auto px-4 py-8">{% block content %}{% endblock %}</main>
+      <footer class="bg-gray-800 text-white py-6 mt-auto">
+        <div class="container mx-auto px-4 text-center">
+          <p>&copy; 2025 Blog. All rights reserved.</p>
+        </div>
       </footer>
     </div>
   </body>

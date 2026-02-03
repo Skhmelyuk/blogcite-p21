@@ -3,45 +3,47 @@
 {% block title %}{{ post.title }}{% endblock %}
 
 {% block content %}
-<article class="post-detail">
-  <div class="post-detail-header">
-    <h1 class="post-detail-title">{{ post.title }}</h1>
-    <div class="post-detail-meta">
-      <span class="meta-item">👤 {{ post.author }}</span>
-      <span class="meta-item">📅 {{ post.created_at|date:"d.m.Y H:i" }}</span>
-      <span class="meta-item">👁️ {{ post.views }} переглядів</span>
-      <span class="meta-item">📂 <a href="{{ post.category.get_absolute_url }}">{{ post.category.name }}</a></span>
+<article class="bg-white rounded-lg shadow-lg overflow-hidden mb-8">
+  <div class="p-8">
+    <h1 class="text-4xl font-bold text-gray-800 mb-4">{{ post.title }}</h1>
+    <div class="flex flex-wrap gap-4 text-sm text-gray-500 mb-6 pb-6 border-b border-gray-200">
+      <span class="flex items-center gap-1">👤 {{ post.author }}</span>
+      <span class="flex items-center gap-1">📅 {{ post.created_at|date:"d.m.Y H:i" }}</span>
+      <span class="flex items-center gap-1">👁️ {{ post.views }} переглядів</span>
+      <span class="flex items-center gap-1">📂 <a href="{{ post.category.get_absolute_url }}" class="text-teal-600 hover:text-teal-700 font-medium">{{ post.category.name }}</a></span>
     </div>
   </div>
 
   {% if post.image %}
-  <div class="post-detail-image">
-    <img src="{{ post.image.url }}" alt="{{ post.title }}">
+  <div class="w-full">
+    <img src="{{ post.image.url }}" alt="{{ post.title }}" class="w-full max-h-96 object-cover">
   </div>
   {% endif %}
 
-  <div class="post-detail-content">
+  <div class="p-8 prose prose-lg max-w-none">
     {{ post.content|linebreaks }}
   </div>
 
-  <div class="post-detail-footer">
-    <p class="post-updated">Оновлено: {{ post.updated_at|date:"d.m.Y H:i" }}</p>
-    <a href="{% url 'main:post_list' %}" class="back-btn">← Повернутися до списку</a>
+  <div class="p-8 pt-6 border-t border-gray-200 flex items-center justify-between">
+    <p class="text-sm text-gray-500">Оновлено: {{ post.updated_at|date:"d.m.Y H:i" }}</p>
+    <a href="{% url 'main:post_list' %}" class="inline-flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg transition-colors font-medium">← Повернутися до списку</a>
   </div>
 </article>
 
 {% if related_posts %}
-<section class="related-posts">
-  <h2 class="related-title">Схожі пости</h2>
-  <div class="related-grid">
+<section class="mt-12">
+  <h2 class="text-3xl font-bold text-gray-800 mb-6">Схожі пости</h2>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     {% for related in related_posts %}
-    <div class="related-card">
+    <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow">
       {% if related.image %}
-      <img src="{{ related.image.url }}" alt="{{ related.title }}">
+      <img src="{{ related.image.url }}" alt="{{ related.title }}" class="w-full h-40 object-cover">
       {% endif %}
-      <h3>{{ related.title }}</h3>
-      <p>{{ related.content|truncatewords:15 }}</p>
-      <a href="{{ related.get_absolute_url }}">Читати далі →</a>
+      <div class="p-5">
+        <h3 class="text-xl font-bold text-gray-800 mb-2 hover:text-teal-600 transition-colors">{{ related.title }}</h3>
+        <p class="text-gray-600 mb-4 text-sm">{{ related.content|truncatewords:15 }}</p>
+        <a href="{{ related.get_absolute_url }}" class="inline-block bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg transition-colors font-medium text-sm">Читати далі →</a>
+      </div>
     </div>
     {% endfor %}
   </div>
