@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'apps.main',
-    "apps.cart"
+    "apps.cart",
+    "apps.accounts"
 ]
 
 MIDDLEWARE = [
@@ -49,6 +50,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'config.middleware.AdminAccessRedirectMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -104,12 +106,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
-
+LANGUAGE_CODE = 'uk'
+TIME_ZONE = 'Europe/Kyiv'
 USE_I18N = True
-
 USE_TZ = True
 
 
@@ -128,3 +127,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_URL = 'accounts:login'
+LOGIN_REDIRECT_URL = 'main:post_list'
+LOGOUT_REDIRECT_URL = 'main:post_list'

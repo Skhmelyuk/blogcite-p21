@@ -3,29 +3,36 @@
 {% block title %} Posts {% endblock %}
 
 {% block content %}
-<h1 class="posts-title">{% if category %}{{ category.name }}{% else %}Всі пости{% endif %}</h1>
-<div class="sort-buttons">
-  <a href="?sort=new" class="sort-btn {% if current_sort == 'new' %}active{% endif %}">Спочатку нові</a>
-  <a href="?sort=old" class="sort-btn {% if current_sort == 'old' %}active{% endif %}">Спочатку старі</a>
-  <a href="?sort=popular" class="sort-btn {% if current_sort == 'popular' %}active{% endif %}">Спочатку популярні</a>
+<div class="mb-8">
+  <h1 class="text-4xl font-bold text-gray-800 mb-4">{% if category %}{{ category.name }}{% else %}Всі пости{% endif %}</h1>
+  <div class="flex flex-wrap gap-3">
+    <a href="?sort=new" class="px-4 py-2 bg-teal-100 text-teal-700 rounded-lg hover:bg-teal-200 transition-colors font-medium">Спочатку нові</a>
+    <a href="?sort=old" class="px-4 py-2 bg-teal-100 text-teal-700 rounded-lg hover:bg-teal-200 transition-colors font-medium">Спочатку старі</a>
+    <a href="?sort=popular" class="px-4 py-2 bg-teal-100 text-teal-700 rounded-lg hover:bg-teal-200 transition-colors font-medium">Спочатку популярні</a>
+  </div>
 </div>
-<div class="posts-container">
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
   {% for post in posts %}
-  <div class="post">
+  <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow">
     {% if post.image %}
-      <img src="{{ post.image.url }}" alt="{{ post.title }}">
+    <img src="{{ post.image.url }}" alt="{{ post.title }}" class="w-full h-48 object-cover">
     {% endif %}
-    <h2 class="post-title">{{ post.title }}</h2>
-    <p class="post-content">{{ post.content|truncatewords:30 }}</p>
-    <div class="post-meta">
-      <p class="post-author">👤 {{ post.author }}</p>
-      <p class="post-created_at">📅 {{ post.created_at|date:"d.m.Y" }}</p>
-      <p class="post-updated_at">👁️ {{ post.views }} переглядів</p>
+    <div class="p-6">
+      <h2 class="text-2xl font-bold text-gray-800 mb-3 hover:text-teal-600 transition-colors">{{ post.title }}</h2>
+      <p class="text-gray-600 mb-4 line-clamp-3">{{ post.content|truncatewords:30 }}</p>
+      <div class="flex flex-wrap gap-4 text-sm text-gray-500 mb-4">
+        <span class="flex items-center gap-1">👤 {{ post.author }}</span>
+        <span class="flex items-center gap-1">📅 {{ post.created_at|date:"d.m.Y" }}</span>
+        <span class="flex items-center gap-1">👁️ {{ post.views }} переглядів</span>
+      </div>
+      <a href="{{ post.get_absolute_url }}" class="inline-block bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg transition-colors font-medium">Читати далі →</a>
     </div>
-    <a href="{{ post.get_absolute_url }}">Читати далі →</a>
   </div>
   {% empty %}
-  <p class="no-posts">Пости не знайдено.</p>
+  <div class="col-span-full">
+    <p class="text-center text-gray-500 text-lg py-12">Пости не знайдено.</p>
+  </div>
   {% endfor %}
 </div>
 {% endblock %}
