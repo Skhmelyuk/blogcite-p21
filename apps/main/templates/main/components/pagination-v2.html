@@ -1,0 +1,32 @@
+{% if posts.has_other_pages %}
+<div class="col-span-full mt-8">
+  <div class="flex justify-center items-center gap-2 flex-wrap">
+    {% if posts.has_previous %}
+      <a href="?page={{ posts.previous_page_number }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" 
+         class="px-3 py-2 bg-white text-teal-700 rounded-lg shadow hover:bg-teal-50 transition-colors font-medium border border-teal-200">
+        &lsaquo;
+      </a>
+    {% endif %}
+    
+    {% for num in posts.paginator.page_range %}
+      {% if posts.number == num %}
+        <span class="px-4 py-2 bg-teal-600 text-white rounded-lg shadow font-semibold">
+          {{ num }}
+        </span>
+      {% elif num > posts.number|add:'-3' and num < posts.number|add:'3' %}
+        <a href="?page={{ num }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" 
+           class="px-4 py-2 bg-white text-teal-700 rounded-lg shadow hover:bg-teal-50 transition-colors font-medium border border-teal-200">
+          {{ num }}
+        </a>
+      {% endif %}
+    {% endfor %}
+    
+    {% if posts.has_next %}
+      <a href="?page={{ posts.next_page_number }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" 
+         class="px-3 py-2 bg-white text-teal-700 rounded-lg shadow hover:bg-teal-50 transition-colors font-medium border border-teal-200">
+        &rsaquo;
+      </a>
+    {% endif %}
+  </div>
+</div>
+{% endif %}
