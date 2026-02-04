@@ -1,0 +1,41 @@
+{% if posts.has_other_pages %}
+<div class="col-span-full mt-8">
+  <div class="flex justify-center items-center gap-2 flex-wrap">
+    {% if posts.has_previous %}
+    <a
+      href="?page=1{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"
+      class="px-4 py-2 bg-white text-teal-700 rounded-lg shadow hover:bg-teal-50 transition-colors font-medium border border-teal-200"
+    >
+      &laquo; Перша
+    </a>
+    <a
+      href="?page={{ posts.previous_page_number }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"
+      class="px-4 py-2 bg-white text-teal-700 rounded-lg shadow hover:bg-teal-50 transition-colors font-medium border border-teal-200"
+    >
+      &lsaquo; Попередня
+    </a>
+    {% endif %}
+
+    <span
+      class="px-6 py-2 bg-teal-600 text-white rounded-lg shadow font-semibold"
+    >
+      Сторінка {{ posts.number }} з {{ posts.paginator.num_pages }}
+    </span>
+
+    {% if posts.has_next %}
+    <a
+      href="?page={{ posts.next_page_number }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"
+      class="px-4 py-2 bg-white text-teal-700 rounded-lg shadow hover:bg-teal-50 transition-colors font-medium border border-teal-200"
+    >
+      Наступна &rsaquo;
+    </a>
+    <a
+      href="?page={{ posts.paginator.num_pages }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"
+      class="px-4 py-2 bg-white text-teal-700 rounded-lg shadow hover:bg-teal-50 transition-colors font-medium border border-teal-200"
+    >
+      Остання &raquo;
+    </a>
+    {% endif %}
+  </div>
+</div>
+{% endif %}

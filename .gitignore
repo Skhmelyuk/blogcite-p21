@@ -1,4 +1,11 @@
-.venv
-venv
-__pycache__
+venv/
+.pulintrc
+__pycache__/
+
+.vscode
+.idea
+.env
+
+media/
 db.sqlite3
+debug.log
