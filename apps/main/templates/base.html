@@ -1,4 +1,5 @@
 {% load static %}
+{% load blog_tags %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -35,6 +36,7 @@
         <nav class="mt-4">
             <ul class="flex flex-wrap gap-4">
               <li><a href="{% url 'main:post_list' %}" class="text-gray-700 hover:text-teal-600 font-medium transition-colors">Всі пости</a></li>
+              {% get_categories_with_count as categories %}
               {% for category in categories %}
                 <li><a href="{{ category.get_absolute_url }}" class="text-gray-700 hover:text-teal-600 font-medium transition-colors">{{ category.name }}</a></li>
               {% endfor %}

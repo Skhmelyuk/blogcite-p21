@@ -5,7 +5,6 @@ from django.db.models import Q
 
 
 def post_list(request, category_slug=None):
-    categories = Category.objects.all()
     posts = Post.objects.all()
 
     category = None
@@ -48,7 +47,6 @@ def post_list(request, category_slug=None):
 
     return render(request, 'main/post_list.html', {
         'posts': posts, 
-        'categories': categories, 
         'category': category,
         'search_query': search_query,
     })
@@ -58,9 +56,6 @@ def post_detail(request, id, slug):
     post.views += 1
     post.save()
 
-    related_posts = Post.objects.filter(category=post.category).exclude(id=post.id)[:4]
-
     return render(request, 'main/post_details.html', {
         'post': post, 
-        'related_posts': related_posts
     })
