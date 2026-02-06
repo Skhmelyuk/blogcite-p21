@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
-
+{% load blog_filters %}
+{% load blog_tags %}
 {% block title %}{{ post.title }}{% endblock %}
 
 {% block content %}
@@ -7,11 +8,18 @@
   <div class="p-8">
     <h1 class="text-4xl font-bold text-gray-800 mb-4">{{ post.title }}</h1>
     <div class="flex flex-wrap gap-4 text-sm text-gray-500 mb-6 pb-6 border-b border-gray-200">
-      <span class="flex items-center gap-1">👤 {{ post.author }}</span>
-      <span class="flex items-center gap-1">📅 {{ post.created_at|date:"d.m.Y H:i" }}</span>
-      <span class="flex items-center gap-1">👁️ {{ post.views }} переглядів</span>
+      <span>📖 Час читання: {{ post.content|reading_time }}</span>
+      <span>🕒 Опубліковано: {{ post.created_at|time_ago }}</span>
+      <span class="flex items-center gap-1">👁️ {{ post.views|compact_views }} переглядів</span>
       <span class="flex items-center gap-1">📂 <a href="{{ post.category.get_absolute_url }}" class="text-teal-600 hover:text-teal-700 font-medium">{{ post.category.name }}</a></span>
+      <!-- Значок "NEW" для нових постів -->
+      {% if post.created_at|is_new %}
+        <span class="badge badge-new">🆕 NEW!</span>
+      {% endif %}
+      <span>{{ post.likes|format_likes }}</span>
     </div>
+       <!-- Перше речення як анонс -->
+    <p class="lead">{{ post.content|first_sentence }}</p>
   </div>
 
   {% if post.image %}
@@ -30,6 +38,7 @@
   </div>
 </article>
 
+{% get_related_posts post 4 as related_posts %}
 {% if related_posts %}
 <section class="mt-12">
   <h2 class="text-3xl font-bold text-gray-800 mb-6">Схожі пости</h2>
