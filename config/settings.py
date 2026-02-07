@@ -33,7 +33,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'apps.main',
     "apps.cart",
-    "apps.accounts"
+    "apps.accounts",
+    "apps.contact",
 ]
 
 MIDDLEWARE = [
@@ -125,3 +126,15 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = 'accounts:login'
 LOGIN_REDIRECT_URL = 'main:post_list'
 LOGOUT_REDIRECT_URL = 'main:post_list'
+
+# Email налаштування
+# Для розробки - виводить email у консоль (змініть на smtp.EmailBackend для продакшну)
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')
+EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='noreply@example.com')
+CONTACT_EMAIL = config('CONTACT_EMAIL', default='admin@example.com')

@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Зв'язатися з нами{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto px-4 py-12">
+    <div class="bg-white rounded-xl shadow-2xl overflow-hidden">
+        <div class="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-6">
+            <h2 class="text-3xl font-bold text-center">
+                <i class="fas fa-envelope mr-3"></i>
+                Зв'язатися з нами
+            </h2>
+        </div>
+        <div class="p-8">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="mb-4 p-4 rounded-lg {% if message.tags == 'success' %}bg-green-100 border border-green-400 text-green-800{% elif message.tags == 'error' %}bg-red-100 border border-red-400 text-red-800{% elif message.tags == 'warning' %}bg-yellow-100 border border-yellow-400 text-yellow-800{% else %}bg-blue-100 border border-blue-400 text-blue-800{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <p class="text-gray-600 mb-6 flex items-center">
+                <i class="fas fa-info-circle mr-2 text-blue-500"></i>
+                Маєте питання або пропозиції? Заповніть форму нижче, і ми зв'яжемося з вами найближчим часом.
+            </p>
+
+            <form method="post" novalidate>
+                {% csrf_token %}
+                
+                <div class="mb-5">
+                    <label for="{{ form.name.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
+                        <i class="fas fa-user mr-1 text-blue-500"></i>
+                        {{ form.name.label }} <span class="text-red-500">*</span>
+                    </label>
+                    {{ form.name }}
+                    {% if form.name.errors %}
+                        {% for error in form.name.errors %}
+                            <p class="mt-2 text-sm text-red-600 flex items-center">
+                                <i class="fas fa-exclamation-circle mr-1"></i>{{ error }}
+                            </p>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+                <div class="mb-5">
+                    <label for="{{ form.email.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
+                        <i class="fas fa-envelope mr-1 text-blue-500"></i>
+                        {{ form.email.label }} <span class="text-red-500">*</span>
+                    </label>
+                    {{ form.email }}
+                    {% if form.email.errors %}
+                        {% for error in form.email.errors %}
+                            <p class="mt-2 text-sm text-red-600 flex items-center">
+                                <i class="fas fa-exclamation-circle mr-1"></i>{{ error }}
+                            </p>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+                <div class="mb-5">
+                    <label for="{{ form.subject.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
+                        <i class="fas fa-tag mr-1 text-blue-500"></i>
+                        {{ form.subject.label }} <span class="text-red-500">*</span>
+                    </label>
+                    {{ form.subject }}
+                    {% if form.subject.errors %}
+                        {% for error in form.subject.errors %}
+                            <p class="mt-2 text-sm text-red-600 flex items-center">
+                                <i class="fas fa-exclamation-circle mr-1"></i>{{ error }}
+                            </p>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+                <div class="mb-6">
+                    <label for="{{ form.message.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
+                        <i class="fas fa-comment-dots mr-1 text-blue-500"></i>
+                        {{ form.message.label }} <span class="text-red-500">*</span>
+                    </label>
+                    {{ form.message }}
+                    {% if form.message.errors %}
+                        {% for error in form.message.errors %}
+                            <p class="mt-2 text-sm text-red-600 flex items-center">
+                                <i class="fas fa-exclamation-circle mr-1"></i>{{ error }}
+                            </p>
+                        {% endfor %}
+                    {% endif %}
+                    <p class="mt-2 text-xs text-gray-500">
+                        Мінімум 10 символів
+                    </p>
+                </div>
+
+                <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold py-4 px-6 rounded-lg transition duration-200 transform hover:scale-[1.02] shadow-lg">
+                    <i class="fas fa-paper-plane mr-2"></i>
+                    Відправити повідомлення
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Контактна інформація -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+        <div class="bg-white rounded-lg shadow-lg p-6 text-center transform transition duration-200 hover:scale-105">
+            <div class="mb-4">
+                <i class="fas fa-envelope text-5xl text-blue-600"></i>
+            </div>
+            <h5 class="text-lg font-bold text-gray-800 mb-2">Email</h5>
+            <p class="text-gray-600">info@example.com</p>
+        </div>
+        <div class="bg-white rounded-lg shadow-lg p-6 text-center transform transition duration-200 hover:scale-105">
+            <div class="mb-4">
+                <i class="fas fa-phone text-5xl text-blue-600"></i>
+            </div>
+            <h5 class="text-lg font-bold text-gray-800 mb-2">Телефон</h5>
+            <p class="text-gray-600">+380 XX XXX XX XX</p>
+        </div>
+        <div class="bg-white rounded-lg shadow-lg p-6 text-center transform transition duration-200 hover:scale-105">
+            <div class="mb-4">
+                <i class="fas fa-map-marker-alt text-5xl text-blue-600"></i>
+            </div>
+            <h5 class="text-lg font-bold text-gray-800 mb-2">Адреса</h5>
+            <p class="text-gray-600">Київ, Україна</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
