@@ -101,6 +101,7 @@ from .forms import PostForm
 **Повний список імпортів після змін:**
 
 ```python
+import os
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
@@ -187,7 +188,7 @@ def post_delete(request, id, slug):
         return HttpResponseForbidden("Ви не маєте права видаляти цей пост.")
     
     if request.method == 'POST':
-        post.delete()
+        post.delete()  # Сигнал автоматично видалить зображення
         return redirect('main:post_list')
     
     return render(request, 'main/post_confirm_delete.html', {
@@ -199,12 +200,65 @@ def post_delete(request, id, slug):
 
 - **Перевірка автора** — аналогічно до редагування
 - **`request.method == 'POST'`** — видалення відбувається тільки через POST запит (для безпеки). GET запит показує сторінку підтвердження
-- **`post.delete()`** — видаляє пост з БД
+- **`post.delete()`** — видаляє пост з БД. Зображення видаляється автоматично через сигнал (див. Крок 2.5)
 - **`redirect('main:post_list')`** — перенаправляє на список постів після видалення
 
 ### Чому видалення тільки через POST?
 
 Видалення через GET запит небезпечне — бот або випадковий клік можуть видалити пост. POST запит вимагає підтвердження через форму з CSRF токеном.
+
+---
+
+## Крок 2.5: Автоматичне видалення зображень через сигнали
+
+Замість ручного видалення зображення у view, можна використати **Django сигнали** для автоматичного видалення файлів при видаленні або оновленні моделі.
+
+**Файл:** `apps/main/models.py`
+
+Додайте в кінець файлу після визначення моделей:
+
+```python
+from django.db.models.signals import post_delete, pre_save
+from django.dispatch import receiver
+import os
+
+@receiver(post_delete, sender=Post)
+def delete_post_image(sender, instance, **kwargs):
+    """Видаляє файл зображення при видаленні поста"""
+    if instance.image:
+        if os.path.isfile(instance.image.path):
+            os.remove(instance.image.path)
+
+@receiver(pre_save, sender=Post)
+def delete_old_image_on_update(sender, instance, **kwargs):
+    """Видаляє старе зображення при оновленні поста новим зображенням"""
+    if not instance.pk:
+        return False
+    
+    try:
+        old_image = Post.objects.get(pk=instance.pk).image
+    except Post.DoesNotExist:
+        return False
+    
+    new_image = instance.image
+    if old_image and old_image != new_image:
+        if os.path.isfile(old_image.path):
+            os.remove(old_image.path)
+```
+
+### Пояснення:
+
+- **`@receiver(post_delete, sender=Post)`** — сигнал спрацьовує після видалення поста
+- **`delete_post_image`** — автоматично видаляє файл зображення з диска
+- **`@receiver(pre_save, sender=Post)`** — сигнал спрацьовує перед збереженням поста
+- **`delete_old_image_on_update`** — видаляє старе зображення, якщо користувач завантажує нове при редагуванні
+
+### Переваги використання сигналів:
+
+✅ Автоматичне видалення — не потрібно додавати код у кожну view  
+✅ Видаляє старі зображення при оновленні поста  
+✅ Працює навіть при видаленні через адмін-панель  
+✅ Централізована логіка — весь код в одному місці  
 
 ---
 
