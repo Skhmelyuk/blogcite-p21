@@ -32,10 +32,24 @@
     {{ post.content|linebreaks }}
   </div>
 
-  <div class="p-8 pt-6 border-t border-gray-200 flex items-center justify-between">
-    <p class="text-sm text-gray-500">Оновлено: {{ post.updated_at|date:"d.m.Y H:i" }}</p>
-    <a href="{% url 'main:post_list' %}" class="inline-flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg transition-colors font-medium">← Повернутися до списку</a>
-  </div>
+  <div class="p-8 pt-6 border-t border-gray-200">
+      <div class="flex items-center justify-between">
+          <p class="text-sm text-gray-500">Оновлено: {{ post.updated_at|date:"d.m.Y H:i" }}</p>
+          <div class="flex items-center gap-3">
+              {% if user.is_authenticated and user == post.author %}
+                  <a href="{% url 'main:post_update' post.id post.slug %}" class="inline-flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg transition-colors font-medium">
+                      ✏️ Редагувати
+                  </a>
+                  <a href="{% url 'main:post_delete' post.id post.slug %}" class="inline-flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors font-medium">
+                      🗑️ Видалити
+                  </a>
+              {% endif %}
+              <a href="{% url 'main:post_list' %}" class="inline-flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg transition-colors font-medium">
+                  ← Повернутися до списку
+              </a>
+          </div>
+      </div>
+</div>
 </article>
 
 {% get_related_posts post 4 as related_posts %}

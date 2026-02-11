@@ -1,7 +1,10 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from .models import Post, Category
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseForbidden
+from .forms import PostForm
 
 
 def post_list(request, category_slug=None):
@@ -58,4 +61,59 @@ def post_detail(request, id, slug):
 
     return render(request, 'main/post_details.html', {
         'post': post, 
+    })
+
+@login_required
+def post_create(request):
+    if request.method == 'POST':
+        form = PostForm(request.POST, request.FILES)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = request.user
+            post.save()
+            return redirect(post.get_absolute_url())
+    else:
+        form = PostForm()
+    
+    return render(request, 'main/post_form.html', {
+        'form': form,
+        'title': 'Створити пост',
+    })
+
+@login_required
+def post_update(request, id, slug):
+    post = get_object_or_404(Post, id=id, slug=slug)
+    
+    # Перевірка: тільки автор може редагувати свій пост
+    if post.author != request.user:
+        return HttpResponseForbidden("Ви не маєте права редагувати цей пост.")
+    
+    if request.method == 'POST':
+        form = PostForm(request.POST, request.FILES, instance=post)
+        if form.is_valid():
+            form.save()
+            return redirect(post.get_absolute_url())
+    else:
+        form = PostForm(instance=post)
+    
+    return render(request, 'main/post_form.html', {
+        'form': form,
+        'title': 'Редагувати пост',
+        'post': post,
+    })
+
+@login_required
+def post_delete(request, id, slug):
+    post = get_object_or_404(Post, id=id, slug=slug)
+    
+    # Перевірка: тільки автор може видалити свій пост
+    if post.author != request.user:
+        return HttpResponseForbidden("Ви не маєте права видаляти цей пост.")
+    
+    if request.method == 'POST':
+        post.delete()  # Сигнал автоматично видалить зображення
+        return redirect('main:post_list')
+    
+    return render(request, 'main/post_confirm_delete.html', {
+        'post': post,
     })
