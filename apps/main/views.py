@@ -1,10 +1,11 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Post, Category
+from .models import Post, Category, Comment
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
-from .forms import PostForm
+from .forms import PostForm, CommentForm
+from django.conf import settings
 
 
 def post_list(request, category_slug=None):
@@ -59,8 +60,26 @@ def post_detail(request, id, slug):
     post.views += 1
     post.save()
 
+    comments = post.comments.all()
+    comment_form = CommentForm()
+
+
+    if request.method == 'POST':
+        if not request.user.is_authenticated:
+            return redirect(f'{settings.LOGIN_URL}?next={request.path}')
+        
+        comment_form = CommentForm(request.POST)
+        if comment_form.is_valid():
+            comment = comment_form.save(commit=False)
+            comment.post = post
+            comment.author = request.user
+            comment.save()
+            return redirect(post.get_absolute_url())
+
     return render(request, 'main/post_details.html', {
         'post': post, 
+        'comments': comments,
+        'comment_form': comment_form,
     })
 
 @login_required
@@ -116,4 +135,22 @@ def post_delete(request, id, slug):
     
     return render(request, 'main/post_confirm_delete.html', {
         'post': post,
+    })
+
+
+@login_required
+def comment_delete(request, id):
+    comment = get_object_or_404(Comment, id=id)
+    
+    # Перевірка: тільки автор може видалити свій коментар
+    if comment.author != request.user:
+        return HttpResponseForbidden("Ви не маєте права видаляти цей коментар.")
+    
+    post = comment.post
+    if request.method == 'POST':
+        comment.delete()
+        return redirect(post.get_absolute_url())
+    
+    return render(request, 'main/comment_confirm_delete.html', {
+        'comment': comment,
     })

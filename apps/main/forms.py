@@ -1,5 +1,5 @@
 from django import forms
-from .models import Post
+from .models import Post, Comment
 
 class PostForm(forms.ModelForm):
     class Meta:
@@ -32,4 +32,20 @@ class PostForm(forms.ModelForm):
             'category': 'Категорія',
             'image': 'Зображення',
             'content': 'Контент',
+        }
+
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['body']
+        widgets = {
+            'body': forms.Textarea(attrs={
+                'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent resize-none',
+                'rows': 4,
+                'placeholder': 'Напишіть ваш коментар...',
+            }),
+        }
+        labels = {
+            'body': 'Коментар',
         }
