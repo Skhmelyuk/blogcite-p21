@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Видалити коментар{% endblock %}
+
+{% block content %}
+<div class="max-w-lg mx-auto mt-10">
+  <div class="bg-white rounded-lg shadow-lg p-8">
+    <h1 class="text-2xl font-bold text-gray-800 mb-4">Видалити коментар?</h1>
+    <div class="bg-gray-50 rounded-lg p-4 mb-6">
+      <p class="text-gray-700">{{ comment.body }}</p>
+      <p class="text-sm text-gray-500 mt-2">— {{ comment.author.username }}, {{ comment.created_at|date:"d.m.Y H:i" }}</p>
+    </div>
+    <p class="text-gray-600 mb-6">Ви впевнені, що хочете видалити цей коментар? Цю дію не можна скасувати.</p>
+    <div class="flex gap-4">
+      <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg transition-colors font-medium">
+          Так, видалити
+        </button>
+      </form>
+      <a href="{% url 'main:post_detail' comment.post.id comment.post.slug %}" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-6 py-2 rounded-lg transition-colors font-medium">
+        Скасувати
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -66,3 +66,18 @@ def delete_old_image_on_update(sender, instance, **kwargs):
     if old_image and old_image != new_image:
         if os.path.isfile(old_image.path):
             os.remove(old_image.path)
+
+class Comment(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments', verbose_name="Пост")
+    author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Автор")
+    body = models.TextField(verbose_name="Текст коментаря")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата створення")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата оновлення")
+
+    class Meta:
+        ordering = ["-created_at"]
+        verbose_name = "Коментар"
+        verbose_name_plural = "Коментарі"
+
+    def __str__(self):
+        return f"Коментар від {self.author.username} до «{self.post.title}»"

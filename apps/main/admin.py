@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Post, Category
+from .models import Post, Category, Comment
 from django.utils.html import format_html
 
 
@@ -27,3 +27,14 @@ class CategoryAdmin(admin.ModelAdmin):
   list_display = ("id", "name", "slug")
   list_editable = ("name", "slug")
   prepopulated_fields = {"slug": ("name",)}
+
+
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ("id", "author", "post", "short_body", "created_at")
+    list_filter = ("created_at", "author")
+    search_fields = ("body", "author__username", "post__title")
+
+    def short_body(self, obj):
+        return obj.body[:50] + "..." if len(obj.body) > 50 else obj.body
+    short_body.short_description = "Текст"
